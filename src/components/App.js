@@ -155,41 +155,48 @@ const states = [
   },
 ];
 
+
 function App() {
   const [cityName, setcityName] = useState(false);
   const [townName, setTownName] = useState(false);
-  const [idx, setidx] = useState(0);
-  const [cityidx, setCityidx] = useState(0);
-
+  const [idx, setidx] = useState(-1);
+  const [cityidx, setCityidx] = useState(-1);
+  const toggleItem=(index)=>{
+    idx === index ? setidx(-1):setidx(index)
+  }
+  const toggleCityItem=(index)=>{
+    cityidx === index ? setCityidx(-1):setCityidx(index)
+  }
   return <div id="main">
 
-    {townName ? (
-      <>
-      <ol key="town">
-        {states[idx].cities[cityidx].towns.map((town, townindex)=>(
-          <li id={`town${townindex+1}`} key={`${town}_${townindex}`}>{town.name}</li>
-        ))}
-      </ol>
-      </>
-    ):(
-      cityName ? (
+    <ol key="state">
+      {states.map((state, stateindex)=>(
+        <>
+        <li id={`state${stateindex+1}`} onClick={()=>{setcityName(!cityName), toggleItem(stateindex)}} key={`${state}_${stateindex}`}>{state.name}</li>
+        {idx === stateindex ? 
         <>
         <ol key="cities">
           {states[idx].cities.map((citie, citieindex)=>(
-            <li id={`city${citieindex+1}`} onClick={()=>{setTownName(true), setCityidx(citieindex)}} key={`${citie}_${citieindex}`}>{citie.name}</li>
+            <>
+            <li id={`city${citieindex+1}`} onClick={()=>{setTownName(!townName), toggleCityItem(citieindex)}} key={`${citie}_${citieindex}`}>{citie.name}</li>
+            {cityidx === citieindex ? (
+              <>
+              <ol key="towns">
+                {states[idx].cities[cityidx].towns.map((town, townidx)=>(
+                  <li id={`town${townidx+1}`}>{town.name}</li>
+                ))}
+              </ol>
+              </>
+            ):(null)}
+            
+            </>
           ))}
         </ol>
         </>
-      ):(
-        <>
-        <ol key="state">
-          {states.map((state, stateindex)=>(
-            <li id={`state${stateindex+1}`} onClick={()=>{setcityName(true), setidx(stateindex)}} key={`${state}_${stateindex}`}>{state.name}</li>
-          ))}
-        </ol> 
+        :null}
         </>
-      )
-    )}
+      ))}
+    </ol> 
   </div>;
 }
 
